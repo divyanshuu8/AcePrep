@@ -16,7 +16,10 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -41,9 +44,9 @@ app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 
 // 404 Error handler
-app.use((req, res, next) => {
+/*app.use((req, res, next) => {
   res.status(404).sendFile(path.join(__dirname, '../frontend/build', 'error.html'));
-});
+});*/
 
 // Start the server
 app.listen(PORT, () => {
