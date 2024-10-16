@@ -40,6 +40,7 @@ exports.signup = async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
   const user = new User({
     email,
     password: hashedPassword,
@@ -49,6 +50,8 @@ exports.signup = async (req, res) => {
 
   try {
     await user.save();
+    console.log(`Original password: ${password}`);
+    console.log(`Hashed password: ${hashedPassword}`);
     res.status(201).send({ message: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
@@ -61,6 +64,15 @@ exports.logout = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.send({ message: "Logged out successfully" });
+
+    // Destroy the session
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+
+      res.send({ message: "Logged out successfully" });
+    });
   });
 };
+
