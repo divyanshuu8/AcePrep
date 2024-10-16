@@ -42,7 +42,12 @@ function App() {
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    try {
+      setIsLoggedIn(false);
+      checkSession(); // Refresh the session state
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
   return (
     <Router>

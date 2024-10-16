@@ -18,6 +18,7 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
   const handleLogout = async () => {
     await fetch("http://localhost:5000/auth/logout", {
       method: "POST",
+      credentials: "include", 
     });
     onLogout(); // Call the logout function passed as a prop
     toast.success("Logout Successfull");
