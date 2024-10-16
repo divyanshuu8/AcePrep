@@ -21,7 +21,6 @@ exports.login = (req, res, next) => {
       req.session.userId = user.id; // Set userId
       req.session.isLoggedIn = true; // Set isLoggedIn to true
 
-      console.log("Session after login:", req.session);
       return res.status(200).json({ message: "Login successful" });
     });
   })(req, res, next);
@@ -50,8 +49,6 @@ exports.signup = async (req, res) => {
 
   try {
     await user.save();
-    console.log(`Original password: ${password}`);
-    console.log(`Hashed password: ${hashedPassword}`);
     res.status(201).send({ message: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);

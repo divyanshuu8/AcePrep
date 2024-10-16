@@ -11,16 +11,11 @@ passport.use(
       try {
         const user = await User.findOne({ email });
         if (!user) {
-          console.log('No user found with this email');
           return done(null, false, { message: "Invalid email or password." });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log(`Entered password: ${password}`);
-        console.log(`Stored hash: ${user.password}`);
-        console.log(`Password match result: ${isMatch}`);
         if (!isMatch) {
-          console.log('Password does not match');
           return done(null, false, { message: "Invalid email or password." });
         }
 

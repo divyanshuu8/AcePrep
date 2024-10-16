@@ -24,13 +24,6 @@ const sessionConfig = () => {
     },
   });
 
-  // Log session middleware creation
-  console.log('Session Middleware created:', {
-    secret: process.env.SESSION_SECRET,
-    store: mongoStore !== undefined,
-    secure: process.env.NODE_ENV === 'production',
-  });
-
   return sessionMiddleware;
 };
 
