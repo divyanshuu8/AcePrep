@@ -1,7 +1,5 @@
 // src/components/Hero.jsx
 import React from "react";
-import Navbar from "../partial/Navbar";
-import Footer from "../partial/Footer";
 import Gradient from "../partial/Gradient";
 
 const Hero = () => {
@@ -43,7 +41,6 @@ const Hero = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   );
 };

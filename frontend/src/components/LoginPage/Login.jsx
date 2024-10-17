@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../partial/Navbar";
-import Footer from "../partial/Footer";
 import Gradient from "../partial/Gradient";
 import { toast } from "react-hot-toast";
 
@@ -47,7 +45,7 @@ const Login = ({ onLogin }) => {
         if (response.ok) {
           toast.success(data.message);
           onLogin(); // Update login state in the parent component
-          navigate("/dashboard"); // Redirect after successful login
+          navigate("/"); // Redirect after successful login
         } else {
           toast.error(data.message || "Login failed");
         }
@@ -169,7 +167,6 @@ const Login = ({ onLogin }) => {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   );
 };

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom"; // Updated import
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 
-const Navbar = ({ isLoggedIn, onLogout }) => {
+const Navbar = ({ isLoggedIn, isAdmin, onLogout }) => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,17 +14,16 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-  
+
   const handleLogout = async () => {
     await fetch("http://localhost:5000/auth/logout", {
       method: "POST",
-      credentials: "include", 
+      credentials: "include",
     });
     onLogout(); // Call the logout function passed as a prop
     toast.success("Logout Successfull");
     navigate("/login"); // Redirect to login page after logout
   };
-
 
   return (
     <header className="absolute inset-x-0 top-0 z-50">
@@ -139,6 +138,18 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
           >
             About
           </NavLink>
+          {isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-lg font-semibold leading-6 text-gray-900 underline"
+                  : "text-lg font-semibold leading-6 text-gray-900"
+              }
+            >
+              Admin
+            </NavLink>
+          )}
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -272,6 +283,18 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
                   >
                     About
                   </NavLink>
+                  {isAdmin && (
+                    <NavLink
+                      to="/admin"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 underline"
+                          : "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      }
+                    >
+                      Admin
+                    </NavLink>
+                  )}
                 </div>
                 <div className="py-6">
                   {isLoggedIn ? (

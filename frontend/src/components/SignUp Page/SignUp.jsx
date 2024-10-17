@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../partial/Navbar";
-import Footer from "../partial/Footer";
 import Gradient from "../partial/Gradient";
 
 import { toast } from "react-hot-toast"; // Import toast
@@ -214,7 +212,6 @@ const SignUp = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   );
 };
