@@ -3,6 +3,43 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User"); // Make sure to import your User model
 
+// DELETE user by ID
+router.delete('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params; // Use 'id' instead of '_id'
+
+    // Find the user by ID first
+    const user = await User.findById(id); // Retrieve the user document
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user is an admin
+    if (user.isAdmin) {
+      return res.status(403).json({ message: 'Admin users cannot be deleted.' });
+    }
+
+    // Proceed to delete the user if not an admin
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+    console.error(error);
+  }
+});
+
+
+// API endpoint to fetch users
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // Example API route
 router.get("/hello", (req, res) => {
   res.send("Hello from the backend!");

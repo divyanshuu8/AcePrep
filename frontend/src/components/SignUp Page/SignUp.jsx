@@ -51,7 +51,7 @@ const SignUp = () => {
         toast.error(responseData.message); // Handle conflict (email already in use)
       } else if (response.status === 201) {
         toast.success(responseData.message); // Handle successful sign up
-        navigate("/dashboard"); // Redirect after successful sign up
+        navigate("/login"); // Redirect after successful sign up
       } else if (response.status === 500) {
         toast.error(responseData.message); // Handle server error
       } else {
