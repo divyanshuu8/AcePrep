@@ -1,59 +1,58 @@
-// src/components/Evaluate.js
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import Gradient from "../partial/Gradient";
+import FaceDetection from "./facedetection"; // Import the FaceDetection module
+import { FaCameraRetro } from "react-icons/fa";
 
 const Evaluate = () => {
   const videoRef = useRef(null); // Ref for the video element
+  const canvasRef = useRef(null); // Ref for the canvas element
   const [isStarted, setIsStarted] = useState(false);
+  const [isStraight, setIsStraight] = useState(null); // State for isStraight
+  const { loadModels, detectFaces } = FaceDetection(videoRef, canvasRef); // Create an instance of FaceDetection
 
   const handleNextClick = () => {
-    toast.success("Assessment starting..."); // Triggering toast notification
-
+    toast.success("Assessment starting...");
     setIsStarted(true);
-
-    // Example: Replace this with your actual WebSocket or API call
-    fetch("http://localhost:5000/api/start-assessment", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // Process server messages (update state, UI, etc.)
-        console.log("Message from server:", data);
-      })
-      .catch((error) => console.error("Error receiving messages:", error));
   };
 
   useEffect(() => {
-    // Function to start the webcam
+    let intervalId; // Declare intervalId to hold the interval reference
+
     const startWebcam = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
         });
         if (videoRef.current) {
-          videoRef.current.srcObject = stream; // Set the video source to the webcam stream
+          videoRef.current.srcObject = stream;
+
+          // Start detecting faces at intervals (every second)
+          intervalId = setInterval(async () => {
+            const { isStraight: detectedIsStraight } = await detectFaces(); // Get isStraight from detectFaces
+            setIsStraight(detectedIsStraight); // Update the isStraight state
+          }, 1000);
         }
       } catch (error) {
         console.error("Error accessing webcam:", error);
       }
     };
 
-    startWebcam(); // Start the webcam when the component mounts
+    if (isStarted) {
+      loadModels().then(startWebcam); // Load models only when the assessment starts
+    }
 
     return () => {
       if (videoRef.current) {
         const stream = videoRef.current.srcObject;
         if (stream) {
           const tracks = stream.getTracks();
-          tracks.forEach((track) => track.stop()); // Stop all tracks when unmounting
+          tracks.forEach((track) => track.stop());
         }
       }
+      clearInterval(intervalId); // Clear the interval on cleanup
     };
-  }, []);
+  }, [isStarted, loadModels, detectFaces]); // Run effect only when isStarted changes
 
   return (
     <main className="flex flex-col flex-grow relative isolate px-6 pt-14 lg:px-8">
@@ -65,27 +64,37 @@ const Evaluate = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-        {" "}
-        {/* Grid layout for columns */}
-        {/* First Column: Video */}
-        <div className="flex flex-col items-center">
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            className="w-full max-w-lg rounded-lg shadow-lg" // Add styling for the video
-          />
-          <p className="mt-4 text-center">Webcam Feed</p>
+        <div className="flex flex-col items-center relative">
+          {isStarted ? (
+            <>
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full max-w-lg rounded-lg shadow-lg"
+                width={640}
+                height={480}
+              />
+              <canvas
+                ref={canvasRef}
+                className="absolute top-0 left-0"
+                width={640}
+                height={480}
+              />
+              <p className="mt-4 text-center">Webcam Feed</p>
+            </>
+          ) : (
+            <div className="flex items-center justify-center w-full h-60 bg-white border-2 border-dashed border-gray-400 rounded-lg">
+              <FaCameraRetro className="text-gray-500 text-4xl" />
+              <p className="mt-2 text-gray-500">No webcam feed available</p>
+            </div>
+          )}
         </div>
-        {/* Second Column: Animation Instructions */}
+
         <div className="flex flex-col items-center p-4 bg-gray-900 bg-opacity-100 rounded-lg shadow-md">
-          {/* Translucent dark background */}
-          <h2 className="text-xl font-semibold mb-2 text-white">
-            Instructions
-          </h2>
+          <h2 className="text-xl font-semibold mb-2 text-white">Instructions</h2>
           <p className="mb-4 text-gray-300">Follow these key guidelines:</p>
 
-          {/* Conditionally render the list and button */}
           {!isStarted && (
             <>
               <ul className="list-disc list-inside text-gray-200 space-y-2">
@@ -107,19 +116,23 @@ const Evaluate = () => {
             </>
           )}
 
-          {/* You can add other content here that will display after the button is clicked */}
           {isStarted && (
             <p className="text-green-500 mt-4">
-              The assessment has started. Please wait for further
-              instructions...
+              The assessment has started. Please wait for further instructions...
             </p>
           )}
         </div>
-        {/* Third Column: Feedback Form */}
+
         <div className="flex flex-col items-center p-4 bg-white bg-opacity-80 rounded-lg shadow-md">
-          {" "}
-          {/* Translucent background */}
           <h2 className="text-xl font-semibold mb-2">Feedback Form</h2>
+          {isStarted && isStraight !== null && ( // Show feedback based on isStraight
+            <p className={`mt-4 text-${isStraight ? "green" : "red"}-500`}>
+              You are{" "}
+              {isStraight
+                ? "looking straight at the camera."
+                : "not looking straight at the camera."}
+            </p>
+          )}
         </div>
       </div>
     </main>

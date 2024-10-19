@@ -73,5 +73,22 @@ router.get("/check-session", async (req, res) => {
   });
 });
 
+router.post('/start-assessment', (req, res) => {
+  // Example logic for starting an assessment
+  try {
+    // You can access any data sent in the request body using req.body (e.g., assessment details)
+    const assessmentData = req.body; 
+    
+    // Perform any operations related to starting the assessment, such as saving it in a database, etc.
+    console.log('Assessment data received:', assessmentData);
+
+    // Send a response back to the client
+    res.status(200).json({ message: 'Assessment started successfully', data: assessmentData });
+  } catch (error) {
+    console.error('Error starting assessment:', error);
+    res.status(500).json({ message: 'An error occurred while starting the assessment' });
+  }
+});
+
 
 module.exports = router;
