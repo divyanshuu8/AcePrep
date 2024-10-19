@@ -100,10 +100,10 @@ const Navbar = ({ isLoggedIn, isAdmin, onLogout }) => {
                 >
                   <li>
                     <NavLink
-                      to="/product1"
+                      to="/InterviewPrep"
                       className="block px-4 py-2 hover:bg-gray-100"
                     >
-                      Product 1
+                      Ai - Based InterviewPrep
                     </NavLink>
                   </li>
                   <li>

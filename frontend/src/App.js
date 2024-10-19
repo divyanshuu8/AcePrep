@@ -7,6 +7,8 @@ import SignUp from "./components/SignUp Page/SignUp.jsx";
 import Navbar from "./components/partial/Navbar";
 import Footer from "./components/partial/Footer";
 import Admin from "./components/AdminPage/Admin.jsx";
+import InterviewPrep from "./components/InterviewPrep/InterviewPrep.jsx";
+import Evaluate from "./components/InterviewPrep/Evaluate.jsx";
 
 import { Toaster, toast } from "react-hot-toast";
 import "./App.css";
@@ -89,7 +91,9 @@ const App = () => {
             <Route path="/aboutus" element={<About />} />
             <Route path="/login" element={<Login onLogin={handleLogin} />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/interviewprep" element={<InterviewPrep />} />
             <Route path="/admin" element={<AdminRoute />} />
+            <Route path="/interviewprep/evaluate" element={<Evaluate />} />
           </Routes>
           <Footer />
         </div>
