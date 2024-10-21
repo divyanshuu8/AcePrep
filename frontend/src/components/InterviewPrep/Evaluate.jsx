@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import Gradient from "../partial/Gradient";
 import FaceDetection from "./facedetection"; // Import the FaceDetection module
@@ -16,9 +16,9 @@ const Evaluate = () => {
     setIsStarted(true);
   };
 
-  useEffect(() => {
-    let intervalId; // Declare intervalId to hold the interval reference
-
+  // Memoize the face detection logic to avoid re-rendering
+  const startDetection = useCallback(() => {
+    let intervalId;
     const startWebcam = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -52,7 +52,12 @@ const Evaluate = () => {
       }
       clearInterval(intervalId); // Clear the interval on cleanup
     };
-  }, [isStarted, loadModels, detectFaces]); // Run effect only when isStarted changes
+  }, [isStarted, loadModels, detectFaces]);
+
+  // Only start face detection when the component is mounted and isStarted changes
+  useEffect(() => {
+    startDetection();
+  }, [isStarted, startDetection]); // Use memoized startDetection to avoid unnecessary re-renders
 
   return (
     <main className="flex flex-col flex-grow relative isolate px-6 pt-14 lg:px-8">
